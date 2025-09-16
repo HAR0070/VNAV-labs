@@ -39,12 +39,32 @@ class PlotsPublisherNode : public rclcpp::Node {
     std::string ns;
 
     visualization_msgs::msg::Marker marker_out;
-
     void update() {
       geometry_msgs::msg::TransformStamped
           transform;  // NOTE: you need to populate this transform
+
       try {
+
         // ~~~~~~~~~~~~~~~~~~~~~~  BEGIN OF EDIT SECTION ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        std::chrono::milliseconds wait_duration(10);
+         bool ok = parent->tf_buffer_->canTransform(
+          ref_frame,dest_frame,
+          tf2::TimePointZero,
+          wait_duration);
+
+          if(!ok){
+            RCLCPP_WARN(parent->get_logger(),
+            "transform not availabel between '%s' and '%s' (waited %ld ms)",
+            dest_frame.c_str(), ref_frame.c_str(),
+          (long)wait_duration.count());
+
+          }
+
+
+          transform = parent->tf_buffer_->lookupTransform(
+          ref_frame , dest_frame, tf2::TimePointZero);
+
 
         /* The transform object needs to be populated with the most recent
          * transform from ref_frame to dest_frame as provided by tf.
