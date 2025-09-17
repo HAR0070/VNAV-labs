@@ -4,7 +4,7 @@
 
 int main(){ 
   // initialize rand with constant seed for reproducibility
-  std::srand(314159);
+  std::srand(100000);
 
   RandomVector rv(20);
   rv.print();
